@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Tryme</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* สไตล์สำหรับกล่องข้อความ (Modal) */
+        .modal {
+            display: none; /* เริ่มต้นซ่อน */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* พื้นหลังโปร่งใส */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .modal button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <img src="assets/cat.jpg" alt="Cat" class="circle-image">
+    <button id="start">เริ่มบันทึก</button>
+    <button id="end">หยุดบันทึก</button>
+
+    <!-- กล่องข้อความสำหรับ "กำลังบันทึก..." -->
+    <div id="recordingModal" class="modal">
+        <div class="modal-content">
+            <h2>กำลังบันทึก...</h2>
+            <button id="closeRecordingModal">ปิด</button>
+        </div>
+    </div>
+
+    <!-- กล่องข้อความสำหรับ "กำลังหยุดบันทึก..." -->
+    <div id="alertModal" class="modal">
+        <div class="modal-content">
+            <h2>กำลังหยุดบันทึก...</h2>
+            <button id="closeAlertModal">ปิด</button>
+        </div>
+    </div>
+
+    <!-- กล่องข้อความสำหรับการแจ้งเตือนเมื่อไม่สามารถหยุดบันทึกได้ -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content">
+            <h2>คุณต้องเริ่มบันทึกก่อนที่จะหยุดบันทึก</h2>
+            <button id="closeErrorModal">ปิด</button>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let isRecording = false; // ตัวแปรเพื่อเก็บสถานะการบันทึก
+
+        // ส่งคำสั่งไปยัง backend เมื่อกดปุ่มเริ่ม
+        document.getElementById('start').addEventListener('click', () => {
+            ipcRenderer.send('start-keylogger');
+            isRecording = true;  // เปลี่ยนสถานะเป็นกำลังบันทึก
+            showRecordingModal();  // แสดงกล่องข้อความ "กำลังบันทึก..."
+        });
+
+        // ส่งคำสั่งไปยัง backend เมื่อกดปุ่มหยุด
+        document.getElementById('end').addEventListener('click', () => {
+            if (!isRecording) {
+                // ถ้ายังไม่เริ่มบันทึก แสดงกล่องข้อความแจ้งเตือน
+                showErrorModal();
+            } else {
+                ipcRenderer.send('stop-keylogger');
+                isRecording = false; // เปลี่ยนสถานะเป็นหยุดบันทึกแล้ว
+                showStopModal();  // แสดงกล่องข้อความ "กำลังหยุดบันทึก..."
+            }
+        });
+
+        // ฟังก์ชันแสดงกล่อง "กำลังบันทึก..."
+        function showRecordingModal() {
+            const modal = document.getElementById('recordingModal');
+            modal.style.display = 'flex';
+        }
+
+        // ฟังก์ชันแสดงกล่อง "กำลังหยุดบันทึก..."
+        function showStopModal() {
+            const modal = document.getElementById('alertModal');
+            modal.style.display = 'flex';
+            
+            // ปิดกล่อง "กำลังหยุดบันทึก..." หลังจาก 3 วินาที
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 3000);  // 3000 มิลลิวินาที = 3 วินาที
+        }
+
+        // ฟังก์ชันแสดงกล่องแจ้งเตือนเมื่อไม่สามารถหยุดบันทึกได้
+        function showErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.style.display = 'flex';
+        }
+
+        // ปิดกล่อง "กำลังบันทึก..." เมื่อคลิกปุ่ม
+        document.getElementById('closeRecordingModal').addEventListener('click', () => {
+            const modal = document.getElementById('recordingModal');
+            modal.style.display = 'none';
+        });
+
+        // ปิดกล่อง "กำลังหยุดบันทึก..." เมื่อคลิกปุ่ม
+        document.getElementById('closeAlertModal').addEventListener('click', () => {
+            const modal = document.getElementById('alertModal');
+            modal.style.display = 'none';
+        });
+
+        // ปิดกล่อง "ไม่สามารถหยุดบันทึกได้" เมื่อคลิกปุ่ม
+        document.getElementById('closeErrorModal').addEventListener('click', () => {
+            const modal = document.getElementById('errorModal');
+            modal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

